@@ -1,130 +1,129 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-#define MAX_EMPLOYEES 100
-#define EMPLOYEE_DATA_FILE "employees.dat"
+#define MAX_EMP 100
+#define EMP_FILE "empdata.dat"
 
 typedef struct {
     int id;
     char name[50];
-    float base_salary;
-    float allowances;
-    float deductions;
-    float net_salary;
-} Employee;
+    float base_sal;
+    float allow;
+    float deduct;
+    float net_sal;
+} Emp;
 
-void addEmployee(Employee employees[], int *num_employees);
-void calculateSalary(Employee *employee);
-void generatePaySlip(Employee employee);
-void displayEmployees(Employee employees[], int num_employees);
-void saveEmployeesToFile(Employee employees[], int num_employees);
-int loadEmployeesFromFile(Employee employees[]);
+void addEmp(Emp emps[], int *num_emp);
+void calcSal(Emp *emp);
+void genPaySlip(Emp emp);
+void dispEmps(Emp emps[], int num_emp);
+void saveEmpsToFile(Emp emps[], int num_emp);
+int loadEmpsFromFile(Emp emps[]);
 
-void addEmployee(Employee employees[], int *num_employees) {
-    if (*num_employees >= MAX_EMPLOYEES) {
-        printf("Maximum number of employees reached.\n");
+void addEmp(Emp emps[], int *num_emp) {
+    if (*num_emp >= MAX_EMP) {
+        printf("Max number of employees reached.\n");
         return;
     }
 
-    Employee new_employee;
+    Emp new_emp;
     printf("Enter employee ID: ");
-    if (scanf("%d", &new_employee.id) != 1) {
+    if (scanf("%d", &new_emp.id) != 1) {
         printf("Invalid input for employee ID.\n");
-        while (getchar() != '\n'); // Clear input buffer
+        while (getchar() != '\n'); 
         return;
     }
 
     printf("Enter employee name: ");
-    if (scanf("%s", new_employee.name) != 1) {
+    if (scanf("%s", new_emp.name) != 1) {
         printf("Invalid input for employee name.\n");
-        while (getchar() != '\n'); // Clear input buffer
+        while (getchar() != '\n'); 
         return;
     }
 
     printf("Enter base salary: ");
-    if (scanf("%f", &new_employee.base_salary) != 1) {
+    if (scanf("%f", &new_emp.base_sal) != 1) {
         printf("Invalid input for base salary.\n");
         while (getchar() != '\n'); // Clear input buffer
         return;
     }
 
     printf("Enter allowances: ");
-    if (scanf("%f", &new_employee.allowances) != 1) {
+    if (scanf("%f", &new_emp.allow) != 1) {
         printf("Invalid input for allowances.\n");
-        while (getchar() != '\n'); // Clear input buffer
+        while (getchar() != '\n'); 
         return;
     }
 
     printf("Enter deductions: ");
-    if (scanf("%f", &new_employee.deductions) != 1) {
+    if (scanf("%f", &new_emp.deduct) != 1) {
         printf("Invalid input for deductions.\n");
-        while (getchar() != '\n'); // Clear input buffer
+        while (getchar() != '\n');
         return;
     }
 
-    calculateSalary(&new_employee);
-    employees[*num_employees] = new_employee;
-    (*num_employees)++;
+    calcSal(&new_emp);
+    emps[*num_emp] = new_emp;
+    (*num_emp)++;
 }
 
-void calculateSalary(Employee *employee) {
-    employee->net_salary = employee->base_salary + employee->allowances - employee->deductions;
+void calcSal(Emp *emp) {
+    emp->net_sal = emp->base_sal + emp->allow - emp->deduct;
 }
 
-void generatePaySlip(Employee employee) {
-    printf("\nPay Slip for Employee ID: %d\n", employee.id);
-    printf("Name: %s\n", employee.name);
-    printf("Base Salary: %.2f\n", employee.base_salary);
-    printf("Allowances: %.2f\n", employee.allowances);
-    printf("Deductions: %.2f\n", employee.deductions);
-    printf("Net Salary: %.2f\n", employee.net_salary);
+void genPaySlip(Emp emp) {
+    printf("\nPay Slip for Employee ID: %d\n", emp.id);
+    printf("Name: %s\n", emp.name);
+    printf("Base Salary: %.2f\n", emp.base_sal);
+    printf("Allowances: %.2f\n", emp.allow);
+    printf("Deductions: %.2f\n", emp.deduct);
+    printf("Net Salary: %.2f\n", emp.net_sal);
     printf("----------------------------\n");
 }
 
-void displayEmployees(Employee employees[], int num_employees) {
-    for (int i = 0; i < num_employees; i++) {
-        printf("Employee ID: %d\n", employees[i].id);
-        printf("Name: %s\n", employees[i].name);
-        printf("Base Salary: %.2f\n", employees[i].base_salary);
-        printf("Allowances: %.2f\n", employees[i].allowances);
-        printf("Deductions: %.2f\n", employees[i].deductions);
-        printf("Net Salary: %.2f\n", employees[i].net_salary);
+void dispEmps(Emp emps[], int num_emp) {
+    for (int i = 0; i < num_emp; i++) {
+        printf("Employee ID: %d\n", emps[i].id);
+        printf("Name: %s\n", emps[i].name);
+        printf("Base Salary: %.2f\n", emps[i].base_sal);
+        printf("Allowances: %.2f\n", emps[i].allow);
+        printf("Deductions: %.2f\n", emps[i].deduct);
+        printf("Net Salary: %.2f\n", emps[i].net_sal);
         printf("----------------------------\n");
     }
 }
 
-void saveEmployeesToFile(Employee employees[], int num_employees) {
-    FILE *file = fopen(EMPLOYEE_DATA_FILE, "wb");
+void saveEmpsToFile(Emp emps[], int num_emp) {
+    FILE *file = fopen(EMP_FILE, "wb");
     if (file == NULL) {
         perror("Error opening file for writing");
         return;
     }
 
-    fwrite(&num_employees, sizeof(int), 1, file);
-    fwrite(employees, sizeof(Employee), num_employees, file);
+    fwrite(&num_emp, sizeof(int), 1, file);
+    fwrite(emps, sizeof(Emp), num_emp, file);
 
     fclose(file);
 }
 
-int loadEmployeesFromFile(Employee employees[]) {
-    FILE *file = fopen(EMPLOYEE_DATA_FILE, "rb");
+int loadEmpsFromFile(Emp emps[]) {
+    FILE *file = fopen(EMP_FILE, "rb");
     if (file == NULL) {
         perror("Error opening file for reading");
         return 0;
     }
 
-    int num_employees;
-    fread(&num_employees, sizeof(int), 1, file);
-    fread(employees, sizeof(Employee), num_employees, file);
+    int num_emp;
+    fread(&num_emp, sizeof(int), 1, file);
+    fread(emps, sizeof(Emp), num_emp, file);
 
     fclose(file);
-    return num_employees;
+    return num_emp;
 }
 
 int main() {
-    Employee employees[MAX_EMPLOYEES];
-    int num_employees = loadEmployeesFromFile(employees);
+    Emp emps[MAX_EMP];
+    int num_emp = loadEmpsFromFile(emps);
     int choice;
 
     while (1) {
@@ -138,16 +137,16 @@ int main() {
 
         switch (choice) {
             case 1:
-                addEmployee(employees, &num_employees);
+                addEmp(emps, &num_emp);
                 break;
             case 2: {
                 int emp_id;
                 printf("Enter employee ID for pay slip: ");
                 scanf("%d", &emp_id);
                 int found = 0;
-                for (int i = 0; i < num_employees; i++) {
-                    if (employees[i].id == emp_id) {
-                        generatePaySlip(employees[i]);
+                for (int i = 0; i < num_emp; i++) {
+                    if (emps[i].id == emp_id) {
+                        genPaySlip(emps[i]);
                         found = 1;
                         break;
                     }
@@ -158,10 +157,10 @@ int main() {
                 break;
             }
             case 3:
-                displayEmployees(employees, num_employees);
+                dispEmps(emps, num_emp);
                 break;
             case 4:
-                saveEmployeesToFile(employees, num_employees);
+                saveEmpsToFile(emps, num_emp);
                 printf("Employee data saved. Exiting...\n");
                 return 0;
             default:
